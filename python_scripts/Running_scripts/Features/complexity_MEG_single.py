@@ -19,12 +19,13 @@ from neurokit2.complexity.complexity_lempelziv import complexity_lempelziv
 
 
 RUN_LIST = {'pareidolia':['1','2','3','4', '5', '6', '7', '8'], 'RS':['1', '2']}
-SUBJ_LIST = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11']
+SUBJ_LIST = ['04', '05', '06', '07', '08', '09', '10', '11']
+SUBJ_LIST = ['00', '01', '02', '03']
 TASK_LIST = ['RS']
-method = 'LZ'
-baseline = (-1.5, 0)
+method = 'hurst'
+baseline = (-2, -1.5)
 tmin = 0
-tmax = 8
+tmax = 3
 delay=1
 dimension=2
 tolerance="default"
@@ -37,7 +38,7 @@ for subj in SUBJ_LIST:
             try:
                 epochs_name, epochs_path = get_pareidolia_bids(FOLDERPATH, subj, task, run, stage = 'epo_RS_3sec', cond=None)
                 epochs = mne.read_epochs(epochs_path)
-                epochs = epochs.apply_baseline()
+                #epochs = epochs.apply_baseline(baseline)
                 epochs.pick_types(meg=True, ref_meg=False)
                 epochs = epochs.crop(tmin, tmax)
                 epochs_data = epochs.get_data()
@@ -54,12 +55,12 @@ for subj in SUBJ_LIST:
                             results, info = nk.entropy_multiscale(epochs_data[i][j], show=True, composite=True)
                             print(results)
                         if method == 'hurst':
-                            results, info = nk.complexity_hurst(epochs_data[i][j])
+                            results, info = nk.fractal_hurst(epochs_data[i][j])
                             print(results)
                         complex_trials.append(results)
                     complex_tot.append(complex_trials)
                 complex_tot = np.array(complex_tot)
-                complex_file, complex_path = get_pareidolia_bids(FOLDERPATH, subj, task, run, stage = 'array_comp_LZ_RS')
+                complex_file, complex_path = get_pareidolia_bids(FOLDERPATH, subj, task, run, stage = 'array_comp_hurst_RS_3sec')
                 np.save(complex_path, complex_tot)
             except FileNotFoundError:
                 pass

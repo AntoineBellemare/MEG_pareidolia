@@ -12,7 +12,7 @@ import os
 from scipy.signal import welch
 from fooof import FOOOF
 from PARAMS import *
-
+from statsmodels.stats.multitest import fdrcorrection
 
 
 
@@ -516,7 +516,7 @@ def topoplot(toplot, ch_xy, showtitle=False, titles=None, savefig=True,
 
 
 
-from scipy.io import loadmat
+
 
 def combine_metadata_PSD_complexity (subj_list, run_list, task, epo_stage=None, cp_stage=None, psd_stage=None, save=False,
                                     AVG_mode=False, DAT_df=None, LZ=None, bt_stage=None, save_multi=False, complex_imports=None,
@@ -703,9 +703,9 @@ def FOOOF_aperiodic(data, sf, precision=0.1, max_freq=80, noverlap=None,
     width = [x[2] for x in fm.get_params('peak_params')]
     return offset, exp, cf, amp, width
 
-from statsmodels.stats.multitest import fdrcorrection
 
-def merge_multi_GLM(path, n_electrodes=270, graph=False, ch_xy=None, savename='_'):
+
+def merge_multi_GLM(path, n_electrodes=270, graph=False, ch_xy=None, savename='_', pval_thresh=0.01):
 
     df = pd.read_csv(path+'0.csv')
     df = df.rename(columns={"Unnamed: 0": "fixed_effect"})
@@ -732,8 +732,8 @@ def merge_multi_GLM(path, n_electrodes=270, graph=False, ch_xy=None, savename='_
         for e, effect in enumerate(list(dict_final.keys())):
             value_to_plot = dict_final[effect][0]
             pvals = dict_final[effect][1]
-            _, pvals = fdrcorrection(pvals, alpha=0.05, method='indep')
-            mask = p_values_boolean_1d(pvals, threshold = 0.05)
+            _, pvals = fdrcorrection(pvals, alpha=pval_thresh, method='indep')
+            mask = p_values_boolean_1d(pvals, threshold = pval_thresh)
             extreme = np.max((abs(np.min(np.min(np.array(value_to_plot)))), abs(np.max(np.max(np.array(value_to_plot)))))) # adjust the range of values
             vmax = extreme
             vmin = -extreme

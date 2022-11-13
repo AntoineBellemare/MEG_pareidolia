@@ -101,22 +101,21 @@ for participant in participants[:]:
             Acc_scores = []
             Score_multiclass = []
             clfs = [
-                            KNeighborsClassifier(n_neighbors=3, weights='uniform', leaf_size=30),
+                            #KNeighborsClassifier(n_neighbors=3, weights='uniform', leaf_size=30),
                             LogisticRegression(random_state=rng_seed,max_iter=1000,penalty='l2',C=0.01,solver='liblinear'),
                             SVC(kernel='rbf', C=1,gamma=.2,max_iter=1000),
                             DecisionTreeClassifier(max_depth=30, random_state=rng_seed),
                             RandomForestClassifier(max_depth=None, n_estimators=15, max_features=2, random_state=rng_seed),
-                            AdaBoostClassifier(n_estimators=15, learning_rate=0.5,random_state=rng_seed),
-                            MLPClassifier(hidden_layer_sizes=(5,), activation='relu', alpha=0.01, max_iter=10000, random_state=rng_seed)]
+                            #AdaBoostClassifier(n_estimators=15, learning_rate=0.5,random_state=rng_seed),
+                            #MLPClassifier(hidden_layer_sizes=(5,), activation='relu', alpha=0.01, max_iter=10000, random_state=rng_seed)]
                             #GaussianProcessClassifier(kernel=kernel),
                             #GradientBoostingClassifier(n_estimators=15, learning_rate=0.5, subsample=1, max_depth=2, random_state=rng_seed),
                         #]
                         # Liste des noms associés
             clf_names = [
-                'k-NN','Régression Logistique',
+                'Régression Logistique',
                 'SVM',
-                'Arbre de décision','Forêt aléatoire','AdaBoost',
-                'Perceptron']#,'Processus Gaussien','Gradient Boosting'   ]
+                'Arbre de décision','Forêt aléatoire']#,'Processus Gaussien','Gradient Boosting'   ]
             df = pd.DataFrame()
             score_ = []
             pval_ = []
